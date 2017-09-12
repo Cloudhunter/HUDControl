@@ -1,6 +1,7 @@
 package uk.co.cloudhunter.hudcontrol;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.MouseEvent;
@@ -16,6 +17,10 @@ import org.lwjgl.input.Keyboard;
 import javax.vecmath.Vector2f;
 import java.util.HashMap;
 
+import static uk.co.cloudhunter.hudcontrol.HUDControl.OffsetType.BOTTOMRIGHT;
+import static uk.co.cloudhunter.hudcontrol.HUDControl.OffsetType.TOPLEFT;
+import static uk.co.cloudhunter.hudcontrol.HUDControl.OffsetType.TOPRIGHT;
+
 @Mod(modid = HUDControl.MODID, version = HUDControl.VERSION, clientSideOnly = true)
 public class HUDControl
 {
@@ -28,6 +33,19 @@ public class HUDControl
         this.put(RenderGameOverlayEvent.ElementType.HOTBAR, new Vector2f(0f, 0f));
     }};
 
+    public static HashMap<RenderGameOverlayEvent.ElementType, OffsetType> offsetType = new HashMap<RenderGameOverlayEvent.ElementType, OffsetType>() {{
+        this.put(RenderGameOverlayEvent.ElementType.HOTBAR, BOTTOMRIGHT);
+    }};
+
+    enum OffsetType {
+        CENTRE,
+        TOPLEFT,
+        TOPRIGHT,
+        BOTTOMLEFT,
+        BOTTOMRIGHT,
+        ORIGINAL
+    }
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -38,6 +56,32 @@ public class HUDControl
     public void HUDRender(RenderGameOverlayEvent.Pre e)
     {
         Vector2f translate = translateAmount.get(e.getType());
+        OffsetType offset = offsetType.get(e.getType());
+        if (offset == null)
+            return;
+        ScaledResolution sr = e.getResolution();
+        int x = (sr.getScaledWidth() / 2) - 91 - 29;
+        int y = sr.getScaledHeight() - 22;
+        x = -x;
+        y = -y;
+        switch (offset)
+        {
+            default:
+            case TOPLEFT:
+                break;
+            case TOPRIGHT:
+                x += sr.getScaledWidth() - (182 + 29 + 29);
+                break;
+            case BOTTOMRIGHT:
+                x += sr.getScaledWidth() - (182 + 29 + 29);
+            case BOTTOMLEFT:
+                y += sr.getScaledHeight() - 22;
+                break;
+            case ORIGINAL:
+                x = 0;
+                y = 0;
+        }
+        GlStateManager.translate(x, y, 0F);
         if (translate != null)
         {
             GlStateManager.translate(translate.x, translate.y, 0F);
@@ -49,6 +93,32 @@ public class HUDControl
     public void HUDRender(RenderGameOverlayEvent.Post e)
     {
         Vector2f translate = translateAmount.get(e.getType());
+        OffsetType offset = offsetType.get(e.getType());
+        if (offset == null)
+            return;
+        ScaledResolution sr = e.getResolution();
+        int x = (sr.getScaledWidth() / 2) - 91 - 29;
+        int y = sr.getScaledHeight() - 22;
+        x = -x;
+        y = -y;
+        switch (offset)
+        {
+            default:
+            case TOPLEFT:
+                break;
+            case TOPRIGHT:
+                x += sr.getScaledWidth() - (182 + 29 + 29);
+                break;
+            case BOTTOMRIGHT:
+                x += sr.getScaledWidth() - (182 + 29 + 29);
+            case BOTTOMLEFT:
+                y += sr.getScaledHeight() - 22;
+                break;
+            case ORIGINAL:
+                x = 0;
+                y = 0;
+        }
+        GlStateManager.translate(-x, -y, 0F);
         if (translate != null)
         {
             GlStateManager.translate(-translate.x, -translate.y, 0F);

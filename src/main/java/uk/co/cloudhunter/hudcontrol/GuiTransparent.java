@@ -31,6 +31,12 @@ public class GuiTransparent extends GuiScreen
         int x = (sr.getScaledWidth() / 2) - 91 - 29;
         int y = sr.getScaledHeight() - 22;
 
+
+        if (HUDControl.offsetType.get(RenderGameOverlayEvent.ElementType.HOTBAR) == HUDControl.OffsetType.TOPLEFT) {
+            x = 0;
+            y = 0;
+        }
+
         Vector2f offset = HUDControl.translateAmount.get(RenderGameOverlayEvent.ElementType.HOTBAR);
 
         x += offset.x;
