@@ -1,14 +1,18 @@
 package uk.co.cloudhunter.hudcontrol;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import javax.vecmath.Vector2f;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 public class GuiTransparent extends GuiScreen
 {
+
 
     @Override
     public void drawDefaultBackground() {
@@ -22,52 +26,42 @@ public class GuiTransparent extends GuiScreen
 
     private Vector2f originalState;
     private Vector2f clickPos;
-    private boolean hotbarClicked;
+    private boolean isHeld;
+    private RenderInfo focused;
+
 
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
         ScaledResolution sr = new ScaledResolution(this.mc);
+        isHeld = true;
+        focused = null;
 
-        int x = (sr.getScaledWidth() / 2) - 91 - 29;
-        int y = sr.getScaledHeight() - 22;
-
-
-        if (HUDControl.offsetType.get(RenderGameOverlayEvent.ElementType.HOTBAR) == HUDControl.OffsetType.TOPLEFT) {
-            x = 0;
-            y = 0;
-        }
-
-        Vector2f offset = HUDControl.translateAmount.get(RenderGameOverlayEvent.ElementType.HOTBAR);
-
-        x += offset.x;
-        y += offset.y;
-
-        int width = 182 + 29 + 29;
-        int height = 22;
-
-        if (mouseY >= y && mouseY <= y + height && mouseX >= x && mouseX <= x + width)
-        {
-            originalState = new Vector2f(HUDControl.translateAmount.get(RenderGameOverlayEvent.ElementType.HOTBAR));
+        for(Map.Entry<Object, RenderInfo> entry : HUDControl.renderInfos.entrySet()) {
+            RenderInfo info = entry.getValue();
+            if (!info.isClicked(mouseX, mouseY, sr)) continue;
+            focused = info;
+            originalState = new Vector2f(info.getXOffset(sr), info.getYOffset(sr));
             clickPos = new Vector2f(mouseX, mouseY);
-            hotbarClicked = true;
+            break;
         }
-
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        if (!hotbarClicked) return;
+        if (!isHeld || focused == null) return;
         Vector2f changed = new Vector2f(clickPos);
         changed.sub(new Vector2f(mouseX, mouseY));
         Vector2f renderRepl = new Vector2f(originalState);
         renderRepl.sub(changed);
-        HUDControl.translateAmount.put(RenderGameOverlayEvent.ElementType.HOTBAR, renderRepl);
+
+        focused.setXOffset(renderRepl.getX());
+        focused.setYOffset(renderRepl.getY());
     }
 
     protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        hotbarClicked = false;
+        isHeld = false;
         originalState = null;
         clickPos = null;
     }
