@@ -2,6 +2,8 @@ package uk.co.cloudhunter.hudcontrol;
 
 import net.minecraft.client.gui.ScaledResolution;
 
+import javax.vecmath.Vector2f;
+
 public abstract class RenderInfo<E>
 {
     private E renderElement;
@@ -42,8 +44,7 @@ public abstract class RenderInfo<E>
         yOffset = y;
     }
 
-    public boolean isClicked(int mouseX, int mouseY, ScaledResolution sr)
-    {
+    public Vector2f getEffectiveXY(ScaledResolution sr) {
         int x, y;
         switch (getOffsetType())
         {
@@ -70,6 +71,14 @@ public abstract class RenderInfo<E>
 
         x += getXOffset(sr);
         y += getYOffset(sr);
+        return new Vector2f(x, y);
+    }
+
+    public boolean isClicked(int mouseX, int mouseY, ScaledResolution sr)
+    {
+        Vector2f effectiveXY = getEffectiveXY(sr);
+        float x = effectiveXY.x;
+        float y = effectiveXY.y;
 
         return mouseX >= x && mouseX <= x + getWidth(sr) && mouseY >= y && mouseY <= y + getHeight(sr);
     }

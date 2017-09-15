@@ -1,6 +1,7 @@
 package uk.co.cloudhunter.hudcontrol;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -49,7 +50,28 @@ public class GuiTransparent extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+
+        //drawRect(0, 0, 20, 20, 0x80FFFFFF);
+
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+
+        for(Map.Entry<Object, RenderInfo> entry : HUDControl.renderInfos.entrySet())
+        {
+            RenderInfo info = entry.getValue();
+
+            Vector2f effectiveXY = info.getEffectiveXY(sr);
+
+            int x = (int) effectiveXY.x;
+            int y = (int) effectiveXY.y;
+
+            if (focused == info)
+                drawRect(x, y, x + info.getWidth(sr), y + info.getHeight(sr), 0x80000000);
+            else
+                drawRect(x, y, x + info.getWidth(sr), y + info.getHeight(sr), 0x80FFFFFF);
+        }
         if (!isHeld || focused == null) return;
+
+
         Vector2f changed = new Vector2f(clickPos);
         changed.sub(new Vector2f(mouseX, mouseY));
         Vector2f renderRepl = new Vector2f(originalState);
