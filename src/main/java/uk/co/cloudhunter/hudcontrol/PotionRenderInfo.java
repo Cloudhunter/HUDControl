@@ -1,37 +1,36 @@
 package uk.co.cloudhunter.hudcontrol;
 
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-public class HotbarRenderInfo extends RenderInfo<ElementType>
+public class PotionRenderInfo extends RenderInfo<RenderGameOverlayEvent.ElementType>
 {
-
-    public HotbarRenderInfo(OffsetType offset)
+    public PotionRenderInfo(OffsetType type)
     {
-        super(ElementType.HEALTH, offset);
+        super(RenderGameOverlayEvent.ElementType.POTION_ICONS, type);
     }
 
     @Override
     public int getWidth(ScaledResolution sr)
     {
-        return 240;
+        return 0;
     }
 
     @Override
     public int getHeight(ScaledResolution sr)
     {
-        return 23;
+        return 0;
     }
 
     @Override
     public int getBaseX(ScaledResolution sr)
     {
-        return (sr.getScaledWidth() / 2) - 120;
+        return 0;
     }
 
     @Override
     public int getBaseY(ScaledResolution sr)
     {
-        return sr.getScaledHeight() - 23;
+        return 0;
     }
 }

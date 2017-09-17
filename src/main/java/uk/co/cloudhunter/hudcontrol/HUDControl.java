@@ -3,6 +3,7 @@ package uk.co.cloudhunter.hudcontrol;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,9 +25,17 @@ public class HUDControl
 
     public static final KeyBinding binding = new KeyBinding("key.guichange", Keyboard.KEY_LCONTROL, "key.category.gui");
 
+    private static final RenderInfo.OffsetType defaultOffsetType = RenderInfo.OffsetType.ORIGINAL;
+
     public static HashMap<Object, RenderInfo> renderInfos = new HashMap<Object, RenderInfo>() {{
-        this.put(RenderGameOverlayEvent.ElementType.HOTBAR, new HotbarRenderInfo(RenderInfo.OffsetType.TOPLEFT));
-        this.put(RenderGameOverlayEvent.ElementType.HEALTH, new HealthRenderInfo(RenderInfo.OffsetType.TOPLEFT));
+        this.put(RenderGameOverlayEvent.ElementType.HOTBAR, new HotbarRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.HEALTH, new HealthRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.ARMOR, new ArmourRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.FOOD, new FoodRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.AIR, new AirRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.EXPERIENCE, new ExperienceRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.POTION_ICONS, new PotionRenderInfo(defaultOffsetType));
+        this.put(RenderGameOverlayEvent.ElementType.JUMPBAR, new JumpBarRenderInfo(defaultOffsetType));
     }};
 
     @Mod.EventHandler

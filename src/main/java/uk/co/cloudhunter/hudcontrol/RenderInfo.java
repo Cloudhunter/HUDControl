@@ -60,13 +60,14 @@ public abstract class RenderInfo<E>
             case BOTTOMRIGHT:
                 x = sr.getScaledWidth() - getWidth(sr);
                 y = sr.getScaledHeight() - getHeight(sr);
+                break;
             case BOTTOMLEFT:
                 x = 0;
                 y = sr.getScaledHeight() - getHeight(sr);
                 break;
             case ORIGINAL:
-                x = getBaseY(sr);
-                y = getBaseX(sr);
+                x = getBaseX(sr);
+                y = getBaseY(sr);
         }
 
         x += getXOffset(sr);
